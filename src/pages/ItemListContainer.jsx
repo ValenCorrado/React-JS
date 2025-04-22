@@ -8,14 +8,14 @@ const ItemListContainer = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const cargarProductos = async () => {
+        async function cargarProductos() {
             try {
                 const productos = await fetchProducts(); // Llama a la función para obtener los productos
                 setProducts(productos); // Guarda los productos en el estado
             } catch (error) {
                 setError('Error al cargar los productos');
             }
-        };
+        }
 
         cargarProductos();
     }, []);
