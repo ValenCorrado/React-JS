@@ -1,41 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import fetchProducts from '../services/fetchProducts';
-import { products } from '../data/productos.js';
-
+import React, { useEffect, useState } from 'react';
+import { fetchProducts } from '../services/fetchProducts'; // Importación con nombre
 
 const ItemListContainer = () => {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        async function cargarProductos() {
+        const cargarProductos = async () => {
             try {
-                const productos = await fetchProducts(); // Llama a la función para obtener los productos
+                const productos = await fetchProducts(); // Llama a la función de fetch
                 setProducts(productos); // Guarda los productos en el estado
-            } catch (error) {
-                setError('Error al cargar los productos');
+            } catch (err) {
+                setError(err.message); // Manejo de errores
             }
-        }
+        };
 
         cargarProductos();
     }, []);
 
-    if (error) {
-        return <p>{error}</p>;
-    }
-
     return (
         <div>
-            <h2>Catálogo de Productos</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-                {products.map((producto) => (
-                    <div key={producto.id} style={{ border: '1px solid #ccc', padding: '10px' }}>
-                        <img src={producto.imagen} alt={producto.nombre} style={{ width: '100%' }} />
-                        <h3>{producto.nombre}</h3>
-                        <p>Precio: {producto.precio}</p>
-                    </div>
-                ))}
-            </div>
+            <h2>Lista de Productos</h2>
+            {error ? (
+                <p style={{ color: 'red' }}>{error}</p>
+            ) : (
+                <ul>
+                    {products.map((product) => (
+                        <li key={product.id}>
+                            <strong>{product.nombre}</strong> - {product.precio}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };
