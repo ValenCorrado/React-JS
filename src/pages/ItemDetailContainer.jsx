@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom'; // Para obtener el ID desde la URL
 import { fetchData, fetchProductById } from '../services/fetchData';
+import Counter from '../components/Counter'; // Componente para el contador
 
 const ItemDetailContainer = () => {
     const [detail, setDetail] = useState(null); // Estado para el producto
@@ -24,6 +25,8 @@ const ItemDetailContainer = () => {
         return <p style={{ color: 'red' }}>{error}</p>; // Mensaje de error si ocurre algo
     }
 
+    /* const addCart = () => { */
+
     return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
             {detail ? (
@@ -41,6 +44,10 @@ const ItemDetailContainer = () => {
                     />
                     <p>{detail.descripcion}</p>
                     <p style={{ fontWeight: 'bold', fontSize: '1.2em' }}>Precio: {detail.precio}</p>
+                    <Counter limit={detail.limit} counter={counter} setCounter={setCounter} />
+                    <button onClick={addCart}>
+                        Agregar al carrito 🛒
+                    </button>
                 </>
             ) : (
                 <p>Cargando producto...</p> // Mensaje mientras se carga el producto
