@@ -1,35 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // Para obtener el ID desde la URL
-import { fetchData, fetchProductById } from '../services/fetchData';
-import Counter from '../components/Counter'; // Componente para el contador
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import Counter from '../components/Counter';
+import { useGlobalStates } from '../components/Context/Context';
 
 const ItemDetailContainer = () => {
-    const [detail, setDetail] = useState(null); // Estado para el producto
-    const { id } = useParams(); // Obtiene el ID del producto desde los parámetros de la URL
-    const [error, setError] = useState(null); // Estado para manejar errores
-
+    const { id } = useParams();
+    const { cart, setCart, getProductById } = useGlobalStates();
+    const [detail, setDetail] = useState(null);
+    const [error, setError] = useState(null);
+    const [counter, setCounter] = useState(1);
+    const [loading, setLoading] = useState(true); 
+    
     useEffect(() => {
         const cargarProducto = async () => {
             try {
-                const producto = await fetchProductById(id); // Llama a la función con el ID
-                setDetail(producto); // Guarda el producto en el estado
+                setLoading(true); 
+                const producto = await getProductById(id);
+                setDetail(producto);
             } catch (err) {
-                setError(err.message); // Guarda el mensaje de error
+                setError(err.message);
+            } finally {
+                setLoading(false); 
             }
         };
 
         cargarProducto();
-    }, [id]);
+    }, [id, getProductById]);
+
+    const addCart = () => {
+        if (detail) {
+            const nuevoProducto = { ...detail, cantidad: counter };
+            setCart((prevCart) => {
+                const existe = prevCart.find((item) => item.id === nuevoProducto.id);
+                return existe
+                    ? prevCart.map((item) =>
+                        item.id === nuevoProducto.id
+                            ? { ...item, cantidad: item.cantidad + nuevoProducto.cantidad }
+                            : item
+                    )
+                    : [...prevCart, nuevoProducto];
+            });
+
+            alert(`"${detail.nombre}" agregado al carrito 🛒`);
+        }
+    };
 
     if (error) {
-        return <p style={{ color: 'red' }}>{error}</p>; // Mensaje de error si ocurre algo
+        return <p style={{ color: 'red' }}>{error}</p>;
     }
-
-    /* const addCart = () => { */
 
     return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
-            {detail ? (
+            {loading ? (
+                <p style={{ fontSize: '1.2em', fontWeight: 'bold', color: '#555' }}>🔄 Cargando producto...</p>
+            ) : detail ? (
                 <>
                     <h2>{detail.nombre}</h2>
                     <img
@@ -45,12 +69,10 @@ const ItemDetailContainer = () => {
                     <p>{detail.descripcion}</p>
                     <p style={{ fontWeight: 'bold', fontSize: '1.2em' }}>Precio: {detail.precio}</p>
                     <Counter limit={detail.limit} counter={counter} setCounter={setCounter} />
-                    <button onClick={addCart}>
-                        Agregar al carrito 🛒
-                    </button>
+                    <button onClick={addCart}>Agregar al carrito 🛒</button>
                 </>
             ) : (
-                <p>Cargando producto...</p> // Mensaje mientras se carga el producto
+                <p style={{ fontSize: '1.2em', fontWeight: 'bold', color: '#555' }}>Producto no encontrado</p>
             )}
         </div>
     );
