@@ -1,7 +1,7 @@
 export const products = [
     {
         id: 1,
-        nombre: "Tarta de Chocolate",
+        nombre: "Torta de Chocolate",
         precio: 500,
         imagen: "/assets/tarta-chocolate.jpg",
         limit: 6,

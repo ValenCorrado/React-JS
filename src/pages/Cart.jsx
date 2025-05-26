@@ -1,27 +1,71 @@
-import React from 'react'
-import { useGlobalStates } from '../components/Context/Context';
-
+import React from "react";
+import { useGlobalStates } from "../components/Context/Context";
+import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Cart = () => {
-    const { cart } = useGlobalStates(); // Accede al contexto global para obtener el carrito
-    const total = cart.reduce((acc, item) => acc + item.precio * item.cantidad, 0); // Calcula el total del carrito
+    const { cart, setCart, total } = useGlobalStates();
 
+    const removeItem = (id) => {
+        Swal.fire({
+            title: "¿Eliminar producto?",
+            text: "Este producto será eliminado del carrito.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Eliminar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setCart(cart.filter((item) => item.id !== id));
+                Swal.fire("Producto eliminado", "", "success");
+            }
+        });
+    };
 
+    const clearCart = () => {
+        Swal.fire({
+            title: "¿Vaciar carrito?",
+            text: "Todos los productos serán eliminados.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, vaciar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setCart([]);
+                Swal.fire("Carrito vacío", "Todos los productos han sido eliminados", "success");
+            }
+        });
+    };
 
     return (
-        <div>
-            {cart.map((pord)=> (
-                <div key={pord.id}>
-                    <h2>{pord.nombre}</h2>
-                    <img src={pord.imagen} alt={pord.nombre} />
-                    <p>Precio: ${pord.precio}</p>
-                    <p>Cantidad: {pord.cantidad}</p>
-                </div>
-            ))}
-            <h2>Total: ${total}</h2>
-            <button onClick={() => alert('Compra realizada!')}>Comprar</button> 
-        </div>
-    )
-}
+        <div style={{ textAlign: "center", padding: "20px" }}>
+            <h2>🛒 Carrito de compras</h2>
 
-export default Cart
+            {cart.length === 0 ? (
+                <p style={{ fontSize: "1.2em", fontWeight: "bold", color: "#555" }}>
+                    El carrito está vacío. <Link to="/products">Ver productos</Link>
+                </p>
+            ) : (
+                <>
+                    <ul>
+                        {cart.map((item) => (
+                            <li key={item.id}>
+                                <strong>{item.nombre}</strong> - {item.cantidad} unidades - ${item.precio * item.cantidad}
+                                <button onClick={() => removeItem(item.id)}>❌ Eliminar</button>
+                            </li>
+                        ))}
+                    </ul>
+                    <p style={{ fontWeight: "bold", fontSize: "1.2em" }}>Total: ${total}</p>
+
+                    <button onClick={clearCart} style={{ marginRight: "10px" }}>Vaciar carrito 🗑️</button>
+                    <Link to="/checkout">
+                        <button>Ir al checkout ✅</button>
+                    </Link>
+                </>
+            )}
+        </div>
+    );
+};
+
+export default Cart;

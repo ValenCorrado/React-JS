@@ -1,21 +1,24 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { fetchProducts, fetchProductById } from "../../services/fetchProducts"; // Importa las funciones de obtención de datos
+import { db } from "../services/firebaseConfig";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 
-const GlobalStates = createContext(); // Contexto global
+const GlobalStates = createContext();
 
 export const GlobalProvider = ({ children }) => {
-    const [cart, setCart] = useState([]);                   // Estado del carrito
-    const [total, setTotal] = useState(0);                  // Estado del total
-    const [loading, setLoading] = useState(true);           // Estado de carga
-    const [products, setProducts] = useState([]);           // Estado de productos
-    const [error, setError] = useState(null);               // Estado de errores
+    const [cart, setCart] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState([]);
+    const [error, setError] = useState(null);
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
 
-    // Carga los productos al iniciar la app
     useEffect(() => {
         setLoading(true);
         const cargarProductos = async () => {
             try {
-                const productos = await fetchProducts();
+                const prodCollection = collection(db, "Productos");
+                const productosSnapshot = await getDocs(prodCollection);
+                const productos = productosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setProducts(productos);
             } catch (err) {
                 setError(err.message);
@@ -27,20 +30,28 @@ export const GlobalProvider = ({ children }) => {
         cargarProductos();
     }, []);
 
-    // Función para obtener un producto por ID
     const getProductById = async (id) => {
         try {
-            return await fetchProductById(id);
-        } catch (err) {
-            throw new Error(err.message);
+            const docRef = doc(db, "Productos", id);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                return { id: docSnap.id, ...docSnap.data() };
+            } else {
+                throw new Error("El producto no existe.");
+            }
+        } catch (error) {
+            throw new Error(error.message);
         }
     };
 
+    const calcularItems = cart.reduce((total, prod) => total + prod.cantidad, 0);
+
     return (
-        <GlobalStates.Provider value={{ cart, setCart, total, setTotal, loading, setLoading, products, error, getProductById }}>
+        <GlobalStates.Provider value={{ cart, setCart, total, setTotal, loading, products, error, getProductById, calcularItems, categoriaSeleccionada, setCategoriaSeleccionada }}>
             {children}
         </GlobalStates.Provider>
     );
 };
 
-export const useGlobalStates = () => useContext(GlobalStates); // Hook personalizado
+export const useGlobalStates = () => useContext(GlobalStates);

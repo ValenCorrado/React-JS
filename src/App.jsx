@@ -1,27 +1,31 @@
-import './App.css';
-import React from 'react';
-import Navbar from './components/Header/NavBar';
-import { Routes, Route } from 'react-router-dom';
-import { GlobalProvider } from './components/Context/Context'; 
-import Home from './pages/home';
-import Contact from './pages/Contact';
-import ItemListContainer from './pages/ItemListContainer';
-import ItemDetailContainer from './pages/ItemDetailContainer';
-import Cart from './pages/Cart';
+import "./App.css";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { GlobalProvider } from "./components/Context/Context";
+import Navbar from "./components/Header/NavBar";
+import Home from "./pages/Home";
+import Contact from "./pages/Contact";
+import ItemListContainer from "./pages/ItemListContainer";
+import ItemDetailContainer from "./pages/ItemDetailContainer";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout"; // Asegúrate de que este archivo exista
 
 function App() {
   return (
     <GlobalProvider>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<ItemListContainer />} />
-        <Route path="/products/:category" element={<ItemListContainer />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/item/:id" element={<ItemDetailContainer />} />
-        <Route path="*" element={<h1>404 Not Found</h1>} />
-      </Routes>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<ItemListContainer />} />
+          <Route path="/products/:category" element={<ItemListContainer />} />
+          <Route path="/item/:id" element={<ItemDetailContainer />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<h1 style={{ textAlign: "center", color: "red" }}>404 - Página no encontrada</h1>} />
+        </Routes>
+      </Router>
     </GlobalProvider>
   );
 }
