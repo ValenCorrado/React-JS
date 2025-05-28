@@ -73,4 +73,3 @@ export const getOrderById = async (id) => {
         throw new Error("No se pudo cargar la orden.");
     }
 };
-

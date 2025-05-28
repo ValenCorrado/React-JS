@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useGlobalStates } from "../components/Context/Context";
 import { collection, addDoc } from "firebase/firestore";
-import { db } from "../services/firebaseConfig";
+import { db } from "../config/firebaseConfig";
 import { useNavigate } from "react-router-dom"; 
 import Swal from "sweetalert2";
 

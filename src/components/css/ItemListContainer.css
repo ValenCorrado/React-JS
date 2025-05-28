@@ -1,0 +1,113 @@
+/* Contenedor principal */
+.container {
+    text-align: center;
+    padding: 40px;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Títulos */
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.category {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+/* Grid de productos */
+.products-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Tarjeta de producto */
+.product-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    width: 250px;
+    text-align: center;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Imagen del producto */
+.product-image {
+    width: 100%;
+    border-radius: 8px;
+}
+
+/* Título del producto */
+.product-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Descripción */
+.product-description {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+/* Precio */
+.product-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Botón "Ver más" */
+.product-button {
+    display: inline-block;
+    text-decoration: none;
+    background: #FF914D;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.product-button:hover {
+    background: #FF6200;
+}
+
+/* Mensaje de "cargando" */
+.loading {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Mensaje si no hay productos */
+.no-products {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #666;
+}
+.add-to-cart-button {
+    background: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+    display: block;
+    width: 100%;
+}
+
+.add-to-cart-button:hover {
+    background: #3e8e41;
+}

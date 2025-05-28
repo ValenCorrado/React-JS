@@ -17,7 +17,12 @@ const ItemDetailContainer = () => {
             try {
                 setLoading(true);
                 const producto = await getProductById(id);
-                setDetail(producto);
+
+                if (producto) {
+                    setDetail(producto);
+                } else {
+                    setError("Producto no encontrado");
+                }
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -46,7 +51,7 @@ const ItemDetailContainer = () => {
             Swal.fire({
                 position: "top-end",
                 icon: "success",
-                title: `"${detail.nombre}" agregado al carrito 🛒`,
+                title: `"${detail.title}" agregado al carrito 🛒`,
                 showConfirmButton: false,
                 timer: 1500,
             });
@@ -63,10 +68,10 @@ const ItemDetailContainer = () => {
                 <p style={{ fontSize: "1.2em", fontWeight: "bold", color: "#555" }}>🔄 Cargando producto...</p>
             ) : detail ? (
                 <>
-                    <h2>{detail.nombre}</h2>
+                    <h2>{detail.title}</h2>
                     <img
-                        src={detail.imagen}
-                        alt={detail.nombre}
+                        src={detail.image}
+                        alt={detail.title}
                         style={{
                             width: "300px",
                             borderRadius: "8px",
@@ -74,8 +79,8 @@ const ItemDetailContainer = () => {
                             marginBottom: "20px",
                         }}
                     />
-                    <p>{detail.descripcion}</p>
-                    <p style={{ fontWeight: "bold", fontSize: "1.2em" }}>Precio: ${detail.precio}</p>
+                    <p>{detail.description}</p>
+                    <p style={{ fontWeight: "bold", fontSize: "1.2em" }}>Precio: ${detail.price}</p>
                     <Counter limit={detail.limit} counter={counter} setCounter={setCounter} />
                     <button onClick={addCart}>Agregar al carrito 🛒</button>
                 </>
